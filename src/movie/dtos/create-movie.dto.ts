@@ -1,4 +1,7 @@
-import { IsNotEmpty, MinLength } from "class-validator"; 
+import {
+    IsNotEmpty, 
+    MinLength
+} from "class-validator"; 
 import { Genre } from "src/entities";
 
 export class CreateMovieDto {
@@ -9,7 +12,7 @@ export class CreateMovieDto {
     @IsNotEmpty()
     @MinLength(3)
     description: string;
-
+    
     @IsNotEmpty()
     @MinLength(3)
     release_date: Date;

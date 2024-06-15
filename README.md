@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A movie API built with the [Nest](https://github.com/nestjs/nest) framework using TypeScript, PostgreSQL, and TypeORM. This API allows you to manage movies and genres.
 
 ## Installation
 
@@ -57,10 +57,102 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+### API Endpoints
+
+## Genre Endpoints
+
+- Add Genre
+  - URL: `POST /genre/addGenre`
+  - Body:
+  {
+  "name": "Action"
+  }
+
+  - List Genres
+    - URL: `GET /genre`
+
+  - Get Genre by ID
+    - URL: `GET /genre/:id`
+    - Params:
+      - `id` - Genre ID
+  
+  - Delete Genre
+    - URL: `DELETE /genre/:name`
+    - Params:
+      - `name` - Genre name
+  
+  ### Movie Endpoints
+
+  - Add Movie
+    - URL: `POST /movies/addMovie`
+    - Body:
+          {
+            "title": "Inception",
+            "description": "A mind-bending thriller",
+            "release_date": "2010-07-16",
+            "genre": ["Action", "Sci-Fi"]
+          }
+
+  - List Movies
+    - URL: `GET /movies`
+    - Query Params:
+      - `page` (default: 1)
+      - `limit` (default: 10)
+
+  - Get Movie by ID
+    - URL: `GET /movies:id`
+    - Params:
+      - `id` - Movie ID
+
+  - Update Movie 
+    - URL: `PATch /movies/:id`
+    - Params:
+      - `id` - Movie ID
+    Body:
+      {
+        "title": "Updated Title",
+        "description": "Updated description",
+        "release_date": "2020-01-01",
+        "genre": ["Drama"]
+      }
+
+  - Delete Movie
+    - URL: `DELETE /movies/:title`
+    - Params:
+      - `title` - Movie title
+
+  - Search Movies
+    - URL: `GET /movies/search`
+    - Query Params:
+      - `title` - Movie title
+      - `genre` - Genre name
+
+## Database 
+
+This project uses PostgreSQL. Ensure you have PostgreSQL installed and running. The default configuration uses the following credentials:
+
+- Host: localhost
+- Port: 5432
+- Username: postgres
+- Password: Renovatio0!
+- Database: movie_api
+
+To configure the database, modify the TypeOrmModule options in app.module.ts:
+
+TypeOrmModule.forRoot({
+  type: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  username: 'postgres',
+  password: 'Renovatio0!',
+  database: 'movie_api',
+  entities: entities,
+  synchronize: true,
+  logging: true,
+})
 
 ## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+This project is an open source initiative licensed under the MIT license. If you'd like to support its development, please [read more here](https://docs.nestjs.com/support).
 
 ## Stay in touch
 

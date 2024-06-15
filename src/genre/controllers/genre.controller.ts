@@ -3,7 +3,6 @@ import {
   Get,
   Post, 
   Body, 
-  Patch, 
   Param, 
   Delete,
  } from '@nestjs/common';
@@ -14,22 +13,28 @@ import { CreateGenreDto } from '../dtos/create-genre.dto';
  * whatever the string pass in controller decorator it will be appended to
  * API URL. to call any API from this controller you need to add prefix which is
  * passed in controller decorator.
- * in our case our base URL is http://localhost:3000/user
+ * in our case our base URL is http://localhost:3000/genre
  */
-@Controller('genre')
+@Controller('/genre')
 export class GenreController {
-  constructor(private readonly genreService: GenreService) {}
+  constructor(
+    private readonly genreService: GenreService,
+  ) {}
 
    /**
    * Post decorator represents method of request as we have used post decorator the method
    * of this API will be post.
-   * so the API URL to create User will be
-   * POST http://localhost:3000/user
+   * so the API URL to create Genre will be
+   * POST http://localhost:3000/genre
    */
   @Post('addGenre')
-  async addGenre(@Body() createGenreDto: CreateGenreDto) {
+  async addGenre(
+    @Body() createGenreDto: CreateGenreDto,
+  ) {
     try{
-      await this.genreService.create(createGenreDto);
+      await this.genreService.create(
+        createGenreDto,
+      );
       return {
         sucess: true,
         message: 'Genre Created Successfully',
@@ -43,18 +48,18 @@ export class GenreController {
   }
 
   /**
-   * we have used get decorator to get all the user's list
+   * we have used get decorator to get all the genre's list
    * so the API URL will be
-   * GET http://localhost:3000/user
+   * GET http://localhost:3000/genre
    */
-  @Get("listGenres")
+  @Get()
   async listGenres() {
     try {
-      const data =  this.genreService.findAllGenres();
+      const data =  await this.genreService.findAll();
       return {
         success: true,
         data,
-        message: 'User Fetched Successfully',
+        message: 'Genre Fetched Successfully',
       };
     } catch (error) {
       return {
@@ -64,9 +69,9 @@ export class GenreController {
     }
   }
 
-  @Delete('name')
-  async deleteGenre(@Param('name') name: string) {
-    try {
+  @Delete(':name')
+  async deleteGenre(@Param('name') name: string)  {
+    try { 
       await this.genreService.remove(name);
       return {
         success: true,
@@ -83,12 +88,14 @@ export class GenreController {
   /**
    * we have used get decorator with id param to get id from request
    * so the API URL will be
-   * GET http://localhost:3000/user/:id
+   * GET http://localhost:3000/genre/:id
    */
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async getGenre(@Param('id') id: string) {
     try {
-      const data = await this.genreService.findOne(+id);
+      const data = await this.genreService.findOne(
+        +id,
+      );
       return {
         success: true,
         data,

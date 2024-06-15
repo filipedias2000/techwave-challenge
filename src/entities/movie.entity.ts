@@ -1,5 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Genre } from './genre.entity';
+import {
+  Entity, 
+  PrimaryGeneratedColumn, 
+  Column,
+  ManyToMany,
+  JoinTable,
+ } from 'typeorm';
+ import { Genre } from './genre.entity';
 
 @Entity()
 export class Movie {
@@ -12,7 +18,8 @@ export class Movie {
   @Column({ type: 'varchar', length: 60, unique: true })
   title: string;
 
-  @OneToMany(() => Genre, (genre) => genre.name)
+  @ManyToMany(() => Genre, (genre) => genre.name)
+  @JoinTable()
   genre: Genre[];
 
   @Column({ type: 'varchar', length: 300 })
@@ -21,3 +28,4 @@ export class Movie {
   @Column({ type: 'varchar', length: 40 })
   release_date: Date;
 }
+

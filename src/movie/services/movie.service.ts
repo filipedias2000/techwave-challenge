@@ -1,20 +1,24 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { 
+  HttpException, 
+  Injectable,
+} from '@nestjs/common';
+import { CreateMovieDto } from '../dtos/create-movie.dto';
+import { UpdateMovieDto } from '../dtos/update-movie.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateMovieDto } from '../dtos/create-movie.dto';
 import { Movie } from 'src/entities';
-import { UpdateMovieDto } from '../dtos/update-movie.dto';
-
-//import { UpdateMovieDto } from './dtos/update-movie.dto';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class MovieService {
-   /**
-   * Here, we have used data mapper approch for this tutorial that is why we
-   * injecting repository here. Another approch can be Active records.
-   */
+
    constructor(
-    @InjectRepository(Movie) private readonly movieRepository: Repository<Movie>,
+    @InjectRepository(Movie)
+    private readonly movieRepository: Repository<Movie>,
   ) {}
 
   /**
@@ -23,17 +27,22 @@ export class MovieService {
    * we have defined what are the keys we are expecting from body
    * @returns promise of movie
    */
-  async create(createMovieDto: CreateMovieDto): Promise<Movie> { 
-    return await this.movieRepository.save(createMovieDto);
+  async create(
+    createMovieDto: CreateMovieDto,
+  ): Promise<Movie> { 
+    const movieData = 
+      await this.movieRepository.create(
+        createMovieDto,
+      );
+      return this.movieRepository.save(movieData);
   }
 
   /**
    * this function is used to get all the movie's list
    * @returns promise of array of movies
    */
-  async findAllMovies(): Promise<Movie[]> {
-    return await this.movieRepository.find();
-   //return `This action returns all movie`;
+  async paginate(options: IPaginationOptions): Promise<Pagination<Movie>> {
+    return paginate<Movie>(this.movieRepository, options);
   }
 
   /**
@@ -42,12 +51,15 @@ export class MovieService {
    * @returns promise of movie
    */
   async findOne(id: number): Promise<Movie> {
-    const movieData = await this.movieRepository.findOneBy({ id });
+    const movieData = 
+      await this.movieRepository.findOneBy({ id });
     if(!movieData) {
-      throw new HttpException('Movie Not Found', 404);
+      throw new HttpException(
+        'Movie Not Found', 
+        404,
+      );
     }
     return movieData;
-    //return `This action returns a #${id} movie`;
   }
 
   /**
@@ -57,23 +69,57 @@ export class MovieService {
    * @param updateMovieDto this is partial type of createMovieDto.
    * @returns promise of udpate movie
    */
-  async updateMovie(
+  async update(
     id: number, 
-    updateMovieDto: UpdateMovieDto): Promise<Movie> {
+    updateMovieDto: UpdateMovieDto,
+  ): Promise<Movie> {
     const existingMovie = await this.findOne(id);
-    const movieData = this.movieRepository.merge(existingMovie, updateMovieDto);
-    return await this.movieRepository.save(movieData);
-    //return `This action updates a #${id} movie`;
+    const movieData = this.movieRepository.merge(
+      existingMovie,
+      updateMovieDto,
+    );
+    return await this.movieRepository.save(
+      movieData,
+    );
   }
 
-  /**
-   * this function is used to remove or delete movie from database.
-   * @param id is the type of number, which represent id of movie
-   * @returns number of rows deleted or affected
-   */
-  async removeMovie(id: number): Promise<Movie> {
-    const existingMovie = await this.findOne(id);
-    return await this.movieRepository.remove(existingMovie);
-    // return `This action removes a #${id} movie`;
+  async remove(title: string) {
+    await this.movieRepository
+    .createQueryBuilder()
+    .delete()
+    .from(Movie)
+    .where("title = :title", {title: title})
+    .execute()
+   
+  }
+
+  async searchMovies(
+    title: string, 
+    genre: string,
+  ): Promise<Movie[]> {
+    const query = this.movieRepository.createQueryBuilder('movie');
+    
+    if (title) {
+      query.andWhere(
+        'movie.title ILIKE :title', 
+        { title: `%${title}%` }
+      );
+    }
+    if (genre) {
+      query.andWhere(
+        'movie.genre ILIKE :genre', 
+        { genre: `%${genre}%` }
+      );
+    }
+    
+    const movies = await query.getMany();
+    if (!movies.length) {
+      throw new HttpException(
+        'No Movies Found',
+         404,
+        );
+    }
+    return movies;
   }
 }
+

@@ -1,4 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity, 
+  PrimaryGeneratedColumn,
+  Column,
+ } from 'typeorm';
 
 @Entity()
 export class Genre {
@@ -7,11 +11,11 @@ export class Genre {
    */
   @PrimaryGeneratedColumn('increment', {
     type: 'bigint',
-    name: 'id',
+    //name: 'id',
   })
   id: number;
   
-  @Column({ type: 'varchar', length: 30 })
+  @Column({ type: 'varchar', length: 30, unique: true })
   name: string;
 }
 

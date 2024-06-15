@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GenreModule } from './genre/genre.module';
-import entities from './entities';
 import { MovieModule } from './movie/movie.module';
+import entities from './entities';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { MovieModule } from './movie/movie.module';
       password: 'Renovatio0!',
       username: 'postgres',
       entities: entities, // here we have added movie and genre entity in entities array
-      database: 'movie_api', // pgWithNest?
+      database: 'movie_api', 
       synchronize: true,
       logging: true,
     }),
