@@ -85,30 +85,7 @@ export class MovieController {
     }
   }
 
-  /**
-   * we have used get decorator with id param to get id from request
-   * so the API URL will be
-   * GET http://localhost:3000/movies/:id
-   */
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    try {
-      const data = await this.movieService.findOne(
-        +id,
-      );
-      return {
-        success: true,
-        data,
-        message: 'Movie Fetched Successfully',
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
-
+  
    /**
    * we have used patch decorator with id param to get id from request
    * so the API URL will be
@@ -161,7 +138,6 @@ export class MovieController {
    * so the API URL will be
    * DELETE http://localhost:3000/movies/search
    */
-
   @Get('search')
   async searchMovies(
     @Query('title') title: string, 

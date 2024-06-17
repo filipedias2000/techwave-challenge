@@ -84,28 +84,4 @@ export class GenreController {
       };
     }
   } 
-
-  /**
-   * we have used get decorator with id param to get id from request
-   * so the API URL will be
-   * GET http://localhost:3000/genre/:id
-   */
-  @Get(':id')
-  async getGenre(@Param('id') id: string) {
-    try {
-      const data = await this.genreService.findOne(
-        +id,
-      );
-      return {
-        success: true,
-        data,
-        message: 'Genre Fetched Successfully'
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
-  }
 }

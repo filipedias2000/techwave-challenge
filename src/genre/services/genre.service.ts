@@ -39,23 +39,6 @@ export class GenreService {
     return await this.genreRepository.find();
   }
 
-  /**
-   * this function used to get data of use whose id is passed in parameter
-   * @param id is type of number, which represent the id of genre.
-   * @returns promise of genre
-   */
-  async findOne(id: number): Promise<Genre> {
-    const genreData =  
-      await this.genreRepository.findOneBy({ id });
-    if (!genreData) {
-      throw new HttpException(
-        'Genre Not Found', 
-        404,
-      );
-    }
-    return genreData;
-  }
-
   async remove(name: string) {
     await this.genreRepository
     .createQueryBuilder()

@@ -70,11 +70,6 @@ $ npm run test:cov
 
   - List Genres
     - URL: `GET /genre`
-
-  - Get Genre by ID
-    - URL: `GET /genre/:id`
-    - Params:
-      - `id` - Genre ID
   
   - Delete Genre
     - URL: `DELETE /genre/:name`
